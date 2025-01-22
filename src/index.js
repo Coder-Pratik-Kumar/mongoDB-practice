@@ -25,20 +25,23 @@ app.post("/signup",async (req,res)=>{
     await collection.insertMany([data])
     res.render("home")
 })
-app.post("/login",async (req,res)=>{
-    try{
-        const check=collection.findOne({name:req.body.name})
-        if(check.password===req.body.password){
-            res.render("home")
-        }else{
-            res.send("Wrong Password")
+app.post("/login", async (req, res) => {
+    try {
+        // Await the result of the findOne method
+        const check = await collection.findOne({ name: req.body.name });
+
+        // Check if user exists and password matches
+        if (check && check.password === req.body.password) {
+            res.render("home");
+        } else {
+            res.send("Wrong Password");
         }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.send("Wrong details or user does not exist.");
     }
-    catch{
-        res.send("wrong details")
-    }
-   
-})
+});
+
 app.listen(3000,()=>{
     console.log("port connected")
 })
